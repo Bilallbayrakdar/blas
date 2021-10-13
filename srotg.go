@@ -5,7 +5,7 @@ import "math"
 // Compute a Givens rotation (c,s) which zeroes the vector (a,b)
 // func Srotg(a, b float32) (c, s, r, z float32)
 
-func srotg(a, b float32) (c, s, r, z float32) {
+func Srotg(a, b float32) (c, s, r, z float32) {
 	abs_a := a
 	if a < 0 {
 		abs_a = -a
