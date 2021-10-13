@@ -1,3 +1,3 @@
-module github.com/ziutek/blas
+module github.com/Bilallbayrakdar/blas
 
 go 1.17
