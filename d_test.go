@@ -13,7 +13,7 @@ func iCheck(t *testing.T, inc, N, r, e int) {
 	}
 }
 
-func dCheck(t *testing.T, inc, N int, r, e float64) {
+func DCheck(t *testing.T, inc, N int, r, e float64) {
 	t.Logf("inc=%d N=%d : r=%f e=%f e-r=%g", inc, N, r, e, e-r)
 	if r != e {
 		t.FailNow()
@@ -35,8 +35,8 @@ func TestDdot(t *testing.T) {
 				e += xd[k] * yd[k]
 				k += inc
 			}
-			r := ddot(N, xd, inc, yd, inc)
-			dCheck(t, inc, N, r, e)
+			r := Ddot(N, xd, inc, yd, inc)
+			DCheck(t, inc, N, r, e)
 		}
 	}
 }
@@ -44,9 +44,9 @@ func TestDdot(t *testing.T) {
 func TestDnrm2(t *testing.T) {
 	for inc := 1; inc < 9; inc++ {
 		for N := 0; N <= len(xd)/inc; N++ {
-			e := math.Sqrt(ddot(N, xd, inc, xd, inc))
-			r := dnrm2(N, xd, inc)
-			dCheck(t, inc, N, r, e)
+			e := math.Sqrt(Ddot(N, xd, inc, xd, inc))
+			r := Dnrm2(N, xd, inc)
+			DCheck(t, inc, N, r, e)
 		}
 	}
 }
@@ -61,8 +61,8 @@ func TestDasum(t *testing.T) {
 				e += math.Abs(xd[k])
 				k += inc
 			}
-			r := dasum(N, xd, inc)
-			dCheck(t, inc, N, r, e)
+			r := Dasum(N, xd, inc)
+			DCheck(t, inc, N, r, e)
 		}
 	}
 }
@@ -94,7 +94,7 @@ func TestDswap(t *testing.T) {
 		for N := 0; N <= len(xd)/inc; N++ {
 			copy(a, xd)
 			copy(b, yd)
-			dswap(N, a, inc, b, inc)
+			Dswap(N, a, inc, b, inc)
 			for i := 0; i < len(a); i++ {
 				if i <= inc*(N-1) && i%inc == 0 {
 					if a[i] != yd[i] || b[i] != xd[i] {
@@ -114,7 +114,7 @@ func TestDcopy(t *testing.T) {
 	for inc := 1; inc < 9; inc++ {
 		for N := 0; N <= len(xd)/inc; N++ {
 			a := make([]float64, len(xd))
-			dcopy(N, xd, inc, a, inc)
+			Dcopy(N, xd, inc, a, inc)
 			for i := 0; i < inc*N; i++ {
 				if i%inc == 0 {
 					if a[i] != xd[i] {
@@ -139,7 +139,7 @@ func TestDaxpy(t *testing.T) {
 				e := make([]float64, len(xd))
 				copy(r, xd)
 				copy(e, xd)
-				daxpy(N, alpha, xd, inc, r, inc)
+				Daxpy(N, alpha, xd, inc, r, inc)
 				for i := 0; i < N; i++ {
 					e[i*inc] += alpha * xd[i*inc]
 				}
@@ -167,19 +167,19 @@ func TestDaxpy(t *testing.T) {
 		}
 		d2 := []float64{1.0, 1.0}
 		d3 := []float64{1.0, 1.0, 1.0}
-		if !panicked(func() { daxpy(3, alpha, d2, 1, d2, 1) }) {
+		if !panicked(func() { Daxpy(3, alpha, d2, 1, d2, 1) }) {
 			t.Fatalf("Expected panic on index out of range.")
 		}
-		if !panicked(func() { daxpy(2, alpha, d2, 2, d2, 1) }) {
+		if !panicked(func() { Daxpy(2, alpha, d2, 2, d2, 1) }) {
 			t.Fatalf("Expected panic on index out of range.")
 		}
-		if !panicked(func() { daxpy(2, alpha, d2, 1, d2, 2) }) {
+		if !panicked(func() { Daxpy(2, alpha, d2, 1, d2, 2) }) {
 			t.Fatalf("Expected panic on index out of range.")
 		}
-		if !panicked(func() { daxpy(3, alpha, d3, 1, d2, 1) }) {
+		if !panicked(func() { Daxpy(3, alpha, d3, 1, d2, 1) }) {
 			t.Fatalf("Expected panic on index out of range.")
 		}
-		if !panicked(func() { daxpy(3, alpha, d2, 1, d3, 2) }) {
+		if !panicked(func() { Daxpy(3, alpha, d2, 1, d3, 2) }) {
 			t.Fatalf("Expected panic on index out of range.")
 		}*/
 	}
@@ -193,7 +193,7 @@ func TestDscal(t *testing.T) {
 			e := make([]float64, len(xd))
 			copy(r, xd)
 			copy(e, xd)
-			dscal(N, alpha, r, inc)
+			Dscal(N, alpha, r, inc)
 			for i := 0; i < N; i++ {
 				e[i*inc] = alpha * xd[i*inc]
 			}
@@ -207,7 +207,7 @@ func TestDscal(t *testing.T) {
 	}
 }
 
-func dEq(a, b, p float64) bool {
+func DEq(a, b, p float64) bool {
 	eps := math.SmallestNonzeroFloat64 * 2
 	r := math.Abs(a) + math.Abs(b)
 	if r <= eps {
@@ -216,7 +216,7 @@ func dEq(a, b, p float64) bool {
 	return math.Abs(a-b)/r < p
 }
 
-// Reference implementation of drotg
+// Reference implementation of Drotg
 func refDrotg(a, b float64) (c, s, r, z float64) {
 	roe := b
 	if math.Abs(a) > math.Abs(b) {
@@ -254,9 +254,9 @@ func TestDrotg(t *testing.T) {
 		{0, -2}, {1, -2}, {-1, 2},
 	}
 	for _, v := range vs {
-		c, s, _, _ := drotg(v.a, v.b)
+		c, s, _, _ := Drotg(v.a, v.b)
 		ec, es, _, _ := refDrotg(v.a, v.b)
-		if !dEq(c, ec, 1e-30) || !dEq(s, es, 1e-30) {
+		if !DEq(c, ec, 1e-30) || !DEq(s, es, 1e-30) {
 			t.Fatalf("a=%g b=%g c=%g ec=%g s=%g es=%g", v.a, v.b, c, ec, s, es)
 		}
 	}
@@ -279,16 +279,16 @@ func TestDrot(t *testing.T) {
 				copy(y, yd)
 				copy(ex, xd)
 				copy(ey, yd)
-				dscal(N, v.c, ex, inc)          // ex *= c
-				daxpy(N, v.s, y, inc, ex, inc)  // ex += s*y
-				dscal(N, v.c, ey, inc)          // ey *= c
-				daxpy(N, -v.s, x, inc, ey, inc) // ey += (-s)*x
+				Dscal(N, v.c, ex, inc)          // ex *= c
+				Daxpy(N, v.s, y, inc, ex, inc)  // ex += s*y
+				Dscal(N, v.c, ey, inc)          // ey *= c
+				Daxpy(N, -v.s, x, inc, ey, inc) // ey += (-s)*x
 
 				// (x, y) = (c*x + s*y, c*y - s*x)
-				drot(N, x, inc, y, inc, v.c, v.s)
+				Drot(N, x, inc, y, inc, v.c, v.s)
 
 				for i, _ := range x {
-					if !dEq(x[i], ex[i], 1e-20) || !dEq(y[i], ey[i], 1e-20) {
+					if !DEq(x[i], ex[i], 1e-20) || !DEq(y[i], ey[i], 1e-20) {
 						t.Fatalf(
 							"N=%d inc=%d c=%f s=%f i=%d x=%f ex=%f y=%f ey=%f",
 							N, inc, v.c, v.s, i, x[i], ex[i], y[i], ey[i],
@@ -313,19 +313,19 @@ func init() {
 
 func BenchmarkDdot(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		ddot(len(vd), vd, 1, wd, 1)
+		Ddot(len(vd), vd, 1, wd, 1)
 	}
 }
 
 func BenchmarkDnrm2(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		dnrm2(len(vd), vd, 1)
+		Dnrm2(len(vd), vd, 1)
 	}
 }
 
 func BenchmarkDasum(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		dasum(len(vd), vd, 1)
+		Dasum(len(vd), vd, 1)
 	}
 }
 
@@ -341,7 +341,7 @@ func BenchmarkDswap(b *testing.B) {
 	y := make([]float64, len(vd))
 	b.StartTimer()
 	for i := 0; i < b.N; i++ {
-		dswap(len(x), x, 1, y, 1)
+		Dswap(len(x), x, 1, y, 1)
 	}
 }
 
@@ -350,7 +350,7 @@ func BenchmarkDcopy(b *testing.B) {
 	y := make([]float64, len(vd))
 	b.StartTimer()
 	for i := 0; i < b.N; i++ {
-		dcopy(len(vd), vd, 1, y, 1)
+		Dcopy(len(vd), vd, 1, y, 1)
 	}
 }
 
@@ -359,7 +359,7 @@ func BenchmarkDaxpy(b *testing.B) {
 	y := make([]float64, len(vd))
 	b.StartTimer()
 	for i := 0; i < b.N; i++ {
-		daxpy(len(vd), -1.0, vd, 1, y, 1)
+		Daxpy(len(vd), -1.0, vd, 1, y, 1)
 	}
 }
 
@@ -369,21 +369,21 @@ func BenchmarkDscal(b *testing.B) {
 	copy(y, vd)
 	b.StartTimer()
 	for i := 0; i < b.N; i++ {
-		dscal(len(y), -1.0, y, 1)
+		Dscal(len(y), -1.0, y, 1)
 	}
 }
 
 func BenchmarkDrotg(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		drotg(0, 0)
-		drotg(0, 1)
-		drotg(0, -1)
-		drotg(1, 0)
-		drotg(1, 1)
-		drotg(1, -1)
-		drotg(-1, 0)
-		drotg(-1, 1)
-		drotg(-1, -1)
+		Drotg(0, 0)
+		Drotg(0, 1)
+		Drotg(0, -1)
+		Drotg(1, 0)
+		Drotg(1, 1)
+		Drotg(1, -1)
+		Drotg(-1, 0)
+		Drotg(-1, 1)
+		Drotg(-1, -1)
 	}
 }
 
@@ -397,6 +397,6 @@ func BenchmarkDrot(b *testing.B) {
 	s := c
 	b.StartTimer()
 	for i := 0; i < b.N; i++ {
-		drot(len(x), x, 1, y, 1, c, s)
+		Drot(len(x), x, 1, y, 1, c, s)
 	}
 }

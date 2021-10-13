@@ -32,7 +32,7 @@ func Drotmg(d1, d2, x1, y1 float64) (p DrotmgParam, rd1, rd2, rx1 float64) {
 		if math.Abs(q1) > math.Abs(q2) {
 			p.h21 = -y1 / x1
 			p.h12 = p2 / p1
-			u = 1 - p.h12 * p.h21
+			u = 1 - p.h12*p.h21
 			if u > 0 {
 				p.flag = 0
 				rd1 /= u
@@ -50,7 +50,7 @@ func Drotmg(d1, d2, x1, y1 float64) (p DrotmgParam, rd1, rd2, rx1 float64) {
 				p.h11 = p1 / p2
 				p.h22 = x1 / y1
 				u = 1 + p.h11 + p.h22
-				rd1, rd2 = rd2 / u, rd1 / u
+				rd1, rd2 = rd2/u, rd1/u
 				rx1 = y1 / u
 			}
 		}
