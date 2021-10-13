@@ -1,7 +1,7 @@
 package blas
 
 // Apply a Givens rotation (X', Y') = (c X + s Y, c Y - s X) to the vectors X, Y
-func Srot(N int, X []float32, incX int, Y []float32, incY int, c, s float32)
+// func Srot(N int, X []float32, incX int, Y []float32, incY int, c, s float32)
 
 func srot(N int, X []float32, incX int, Y []float32, incY int, c, s float32) {
 	var xi, yi int

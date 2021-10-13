@@ -1,7 +1,7 @@
 package blas
 
 // Scalar product: X^T Y
-func Sdot(N int, X []float32, incX int, Y []float32, incY int) float32
+// func Sdot(N int, X []float32, incX int, Y []float32, incY int) float32
 
 func sdot(N int, X []float32, incX int, Y []float32, incY int) float32 {
 	var (

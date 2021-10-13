@@ -3,7 +3,7 @@ package blas
 import "math"
 
 // Compute a Givens rotation (c,s) which zeroes the vector (a,b)
-func Drotg(a, b float64) (c, s, r, z float64)
+// func Drotg(a, b float64) (c, s, r, z float64)
 
 func drotg(a, b float64) (c, s, r, z float64) {
 	abs_a := a

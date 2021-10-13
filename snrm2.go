@@ -3,7 +3,7 @@ package blas
 import "math"
 
 // Euclidean norm: ||X||_2 = \sqrt {\sum X_i^2}
-func Snrm2(N int, X []float32, incX int) float32
+// func Snrm2(N int, X []float32, incX int) float32
 
 func snrm2(N int, X []float32, incX int) float32 {
 	var (

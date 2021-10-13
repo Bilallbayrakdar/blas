@@ -1,7 +1,7 @@
 package blas
 
 // Index of largest (absoulute) element of the vector X
-func Idamax(N int, X []float64, incX int) int
+// func Idamax(N int, X []float64, incX int) int
 
 func idamax(N int, X []float64, incX int) int {
 	var (

@@ -1,7 +1,7 @@
 package blas
 
 // Apply a Givens rotation (X', Y') = (c X + s Y, c Y - s X) to the vectors X, Y
-func Drot(N int, X []float64, incX int, Y []float64, incY int, c, s float64)
+// func Drot(N int, X []float64, incX int, Y []float64, incY int, c, s float64)
 
 func drot(N int, X []float64, incX int, Y []float64, incY int, c, s float64) {
 	var xi, yi int

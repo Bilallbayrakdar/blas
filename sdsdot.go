@@ -1,7 +1,7 @@
 package blas
 
 // \alpha + X^T Y  computed using float64
-func Sdsdot(N int, alpha float32, X []float32, incX int, Y []float32, incY int) float32
+// func Sdsdot(N int, alpha float32, X []float32, incX int, Y []float32, incY int) float32
 
 func sdsdot(N int, alpha float32, X []float32, incX int, Y []float32, incY int) float32 {
 	var (

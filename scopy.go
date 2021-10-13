@@ -1,7 +1,7 @@
 package blas
 
 // Copy the  elements of the vectors X and Y.
-func Scopy(N int, X []float32, incX int, Y []float32, incY int)
+// func Scopy(N int, X []float32, incX int, Y []float32, incY int)
 
 func scopy(N int, X []float32, incX int, Y []float32, incY int) {
 	if incX == 1 && incY == 1 {

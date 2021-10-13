@@ -36,7 +36,7 @@ func TestSdsdot(t *testing.T) {
 				e += float64(xf[k]) * float64(yf[k])
 				k += inc
 			}
-			r := Sdsdot(N, 10, xf, inc, yf, inc)
+			r := sdsdot(N, 10, xf, inc, yf, inc)
 			fCheck(t, inc, N, r, float32(e+10))
 		}
 	}
@@ -51,7 +51,7 @@ func TestSdot(t *testing.T) {
 				e += xf[k] * yf[k]
 				k += inc
 			}
-			r := Sdot(N, xf, inc, yf, inc)
+			r := sdot(N, xf, inc, yf, inc)
 			fCheck(t, inc, N, r, e)
 		}
 	}
@@ -60,8 +60,8 @@ func TestSdot(t *testing.T) {
 func TestSnrm2(t *testing.T) {
 	for inc := 1; inc < 9; inc++ {
 		for N := 0; N <= len(xf)/inc; N++ {
-			e := fsqrt(Sdot(N, xf, inc, xf, inc))
-			r := Snrm2(N, xf, inc)
+			e := fsqrt(sdot(N, xf, inc, xf, inc))
+			r := snrm2(N, xf, inc)
 			fCheck(t, inc, N, r, e)
 		}
 	}
@@ -77,7 +77,7 @@ func TestSasum(t *testing.T) {
 				e += fabs(xf[k])
 				k += inc
 			}
-			r := Sasum(N, xf, inc)
+			r := sasum(N, xf, inc)
 			fCheck(t, inc, N, r, e)
 		}
 	}
@@ -97,7 +97,7 @@ func TestIsamax(t *testing.T) {
 					i_max = i
 				}
 			}
-			r := Isamax(N, xf, inc)
+			r := isamax(N, xf, inc)
 			iCheck(t, inc, N, r, i_max)
 		}
 	}
@@ -110,7 +110,7 @@ func TestSswap(t *testing.T) {
 		for N := 0; N <= len(xf)/inc; N++ {
 			copy(a, xf)
 			copy(b, yf)
-			Sswap(N, a, inc, b, inc)
+			sswap(N, a, inc, b, inc)
 			for i := 0; i < len(a); i++ {
 				if i <= inc*(N-1) && i%inc == 0 {
 					if a[i] != yf[i] || b[i] != xf[i] {
@@ -130,7 +130,7 @@ func TestScopy(t *testing.T) {
 	for inc := 1; inc < 9; inc++ {
 		for N := 0; N <= len(xf)/inc; N++ {
 			a := make([]float32, len(xf))
-			Scopy(N, xf, inc, a, inc)
+			scopy(N, xf, inc, a, inc)
 			for i := 0; i < inc*N; i++ {
 				if i%inc == 0 {
 					if a[i] != xf[i] {
@@ -155,7 +155,7 @@ func TestSaxpy(t *testing.T) {
 				e := make([]float32, len(xf))
 				copy(r, xf)
 				copy(e, xf)
-				Saxpy(N, alpha, xf, inc, r, inc)
+				saxpy(N, alpha, xf, inc, r, inc)
 				for i := 0; i < N; i++ {
 					e[i*inc] += alpha * xf[i*inc]
 				}
@@ -178,7 +178,7 @@ func TestSscal(t *testing.T) {
 			e := make([]float32, len(xf))
 			copy(r, xf)
 			copy(e, xf)
-			Sscal(N, alpha, r, inc)
+			sscal(N, alpha, r, inc)
 			for i := 0; i < N; i++ {
 				e[i*inc] = alpha * xf[i*inc]
 			}
@@ -201,7 +201,7 @@ func fEq(a, b, p float32) bool {
 	return fabs(a-b)/r < p
 }
 
-// Reference implementation of Srotg
+// Reference implementation of srotg
 func refSrotg(a, b float32) (c, s, r, z float32) {
 	roe := b
 	if fabs(a) > fabs(b) {
@@ -239,7 +239,7 @@ func TestSrotg(t *testing.T) {
 		{0, -2}, {1, -2}, {-1, 2},
 	}
 	for _, v := range vs {
-		c, s, _, _ := Srotg(v.a, v.b)
+		c, s, _, _ := srotg(v.a, v.b)
 		ec, es, _, _ := refSrotg(v.a, v.b)
 		if !fEq(c, ec, 1e-20) || !fEq(s, es, 1e-20) {
 			t.Fatalf("a=%g b=%g c=%g ec=%g s=%g es=%g", v.a, v.b, c, ec, s, es)
@@ -264,13 +264,13 @@ func TestSrot(t *testing.T) {
 				copy(y, yf)
 				copy(ex, xf)
 				copy(ey, yf)
-				Sscal(N, v.c, ex, inc)          // ex *= c
-				Saxpy(N, v.s, y, inc, ex, inc)  // ex += s*y
-				Sscal(N, v.c, ey, inc)          // ey *= c
-				Saxpy(N, -v.s, x, inc, ey, inc) // ey += (-s)*x
+				sscal(N, v.c, ex, inc)          // ex *= c
+				saxpy(N, v.s, y, inc, ex, inc)  // ex += s*y
+				sscal(N, v.c, ey, inc)          // ey *= c
+				saxpy(N, -v.s, x, inc, ey, inc) // ey += (-s)*x
 
-				// (x, y) = (c*x + s*y, c*y - s*x) 
-				Srot(N, x, inc, y, inc, v.c, v.s)
+				// (x, y) = (c*x + s*y, c*y - s*x)
+				srot(N, x, inc, y, inc, v.c, v.s)
 
 				for i, _ := range x {
 					if !fEq(x[i], ex[i], 1e-7) || !fEq(y[i], ey[i], 1e-7) {
@@ -298,31 +298,31 @@ func init() {
 
 func BenchmarkSdsdot(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		Sdsdot(len(vf), 10, vf, 1, wf, 1)
+		sdsdot(len(vf), 10, vf, 1, wf, 1)
 	}
 }
 
 func BenchmarkSdot(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		Sdot(len(vf), vf, 1, wf, 1)
+		sdot(len(vf), vf, 1, wf, 1)
 	}
 }
 
 func BenchmarkSnrm2(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		Snrm2(len(vf), vf, 1)
+		snrm2(len(vf), vf, 1)
 	}
 }
 
 func BenchmarkSasum(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		Sasum(len(vf), vf, 1)
+		sasum(len(vf), vf, 1)
 	}
 }
 
 func BenchmarkIsamax(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		Isamax(len(vf), vf, 1)
+		isamax(len(vf), vf, 1)
 	}
 }
 
@@ -332,7 +332,7 @@ func BenchmarkSswap(b *testing.B) {
 	y := make([]float32, len(vd))
 	b.StartTimer()
 	for i := 0; i < b.N; i++ {
-		Sswap(len(x), x, 1, y, 1)
+		sswap(len(x), x, 1, y, 1)
 	}
 }
 
@@ -341,7 +341,7 @@ func BenchmarkScopy(b *testing.B) {
 	y := make([]float32, len(vf))
 	b.StartTimer()
 	for i := 0; i < b.N; i++ {
-		Scopy(len(vf), vf, 1, y, 1)
+		scopy(len(vf), vf, 1, y, 1)
 	}
 }
 
@@ -350,7 +350,7 @@ func BenchmarkSaxpy(b *testing.B) {
 	y := make([]float32, len(vf))
 	b.StartTimer()
 	for i := 0; i < b.N; i++ {
-		Saxpy(len(vf), -1.0, vf, 1, y, 1)
+		saxpy(len(vf), -1.0, vf, 1, y, 1)
 	}
 }
 
@@ -360,21 +360,21 @@ func BenchmarkSscal(b *testing.B) {
 	copy(y, vf)
 	b.StartTimer()
 	for i := 0; i < b.N; i++ {
-		Sscal(len(y), -1.0, y, 1)
+		sscal(len(y), -1.0, y, 1)
 	}
 }
 
 func BenchmarkSrotg(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		Srotg(0, 0)
-		Srotg(0, 1)
-		Srotg(0, -1)
-		Srotg(1, 0)
-		Srotg(1, 1)
-		Srotg(1, -1)
-		Srotg(-1, 0)
-		Srotg(-1, 1)
-		Srotg(-1, -1)
+		srotg(0, 0)
+		srotg(0, 1)
+		srotg(0, -1)
+		srotg(1, 0)
+		srotg(1, 1)
+		srotg(1, -1)
+		srotg(-1, 0)
+		srotg(-1, 1)
+		srotg(-1, -1)
 	}
 }
 
@@ -388,6 +388,6 @@ func BenchmarkSrot(b *testing.B) {
 	s := c
 	b.StartTimer()
 	for i := 0; i < b.N; i++ {
-		Srot(len(x), x, 1, y, 1, c, s)
+		srot(len(x), x, 1, y, 1, c, s)
 	}
 }
